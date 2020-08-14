@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import moment from 'moment';
 import income from '../../assets/income.svg';
 import outcome from '../../assets/outcome.svg';
 import total from '../../assets/total.svg';
@@ -7,8 +7,6 @@ import total from '../../assets/total.svg';
 import api from '../../services/api';
 
 import Header from '../../components/Header';
-
-import formatValue from '../../utils/formatValue';
 
 import { Container, CardContainer, Card, TableContainer } from './styles';
 
@@ -39,12 +37,20 @@ const Dashboard: React.FC = () => {
       api.get(`transactions`).then((response) => {
         setTransactions(response.data.transactions);
         setBalance(response.data.balance);
+        console.table(transactions);
       });
 
     }
 
     loadTransactions();
   }, []);
+
+  function getValueFormat(value: number){
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value)
+  }
 
   return (
     <>
@@ -56,21 +62,21 @@ const Dashboard: React.FC = () => {
               <p>Entradas</p>
               <img src={income} alt="Income" />
             </header>
-            <h1 data-testid="balance-income">R$ { balance.income }</h1>
+            <h1 data-testid="balance-income">{getValueFormat(Number(balance.income))}</h1>
           </Card>
           <Card>
             <header>
               <p>Saídas</p>
               <img src={outcome} alt="Outcome" />
             </header>
-            <h1 data-testid="balance-outcome">R$ { balance.outcome }</h1>
+            <h1 data-testid="balance-outcome">{getValueFormat(Number(balance.outcome))}</h1>
           </Card>
           <Card total>
             <header>
               <p>Total</p>
               <img src={total} alt="Total" />
             </header>
-            <h1 data-testid="balance-total">R$ { balance.total }</h1>
+            <h1 data-testid="balance-total">{getValueFormat(Number(balance.total))}</h1>
           </Card>
         </CardContainer>
 
@@ -86,18 +92,14 @@ const Dashboard: React.FC = () => {
             </thead>
 
             <tbody>
-              <tr>
-                <td className="title">Computer</td>
-                <td className="income">R$ 5.000,00</td>
-                <td>Sell</td>
-                <td>20/04/2020</td>
-              </tr>
-              <tr>
-                <td className="title">Website Hosting</td>
-                <td className="outcome">- R$ 1.000,00</td>
-                <td>Hosting</td>
-                <td>19/04/2020</td>
-              </tr>
+              {transactions.map((transacao) => (
+                <tr key={transacao.id}>
+                  <td className="title">{transacao.title}</td>
+                  <td className="income">{getValueFormat(transacao.value)}</td>
+                  <td>{transacao.category.title}</td>
+                  <td>{String(moment("12-25-1995", "MM-DD-YYYY"))}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </TableContainer>
