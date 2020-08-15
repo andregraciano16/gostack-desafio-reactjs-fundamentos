@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 
 import Dropzone from 'react-dropzone';
 import { DropContainer, UploadMessage } from './styles';
+import FileList from  '../FileList/index';
 
 interface UploadProps {
   onUpload: Function;
@@ -37,7 +38,8 @@ const Upload: React.FC<UploadProps> = ({ onUpload }: UploadProps) => {
             <input {...getInputProps()} data-testid="upload" />
             {renderDragMessage(isDragActive, isDragReject)}
           </DropContainer>
-        )}
+        )
+      }
       </Dropzone>
     </>
   );
