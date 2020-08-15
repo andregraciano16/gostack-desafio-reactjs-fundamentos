@@ -97,7 +97,7 @@ const Dashboard: React.FC = () => {
                   <td className="title">{transacao.title}</td>
                   <td className="income">{getValueFormat(transacao.value)}</td>
                   <td>{transacao.category.title}</td>
-                  <td>{String(moment("12-25-1995", "MM-DD-YYYY"))}</td>
+                  <td>{String(moment(transacao.created_at).format("MM/DD/YYYY HH:mm:ss"))}</td>
                 </tr>
               ))}
             </tbody>
