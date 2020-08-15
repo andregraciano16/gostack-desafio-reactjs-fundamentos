@@ -88,7 +88,10 @@ const Dashboard: React.FC = () => {
               {transactions.map((transacao) => (
                 <tr key={transacao.id}>
                   <td className="title">{transacao.title}</td>
-                  <td className="income">{formatValue(transacao.value)}</td>
+                  <td className="income">
+                    { transacao.type === 'outcome' && ' - '}
+                    { formatValue(transacao.value)}
+                  </td>
                   <td>{transacao.category.title}</td>
                   <td>{String(moment(transacao.created_at).format("MM/DD/YYYY HH:mm:ss"))}</td>
                 </tr>
