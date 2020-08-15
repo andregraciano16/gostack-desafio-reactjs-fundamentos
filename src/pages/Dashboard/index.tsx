@@ -33,15 +33,23 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     async function loadTransactions(): Promise<void> {
-
-      api.get(`transactions`).then((response) => {
-        setTransactions(response.data.transactions);
-        setBalance(response.data.balance);
-        console.table(transactions);
-      });
-
+      const response = await api.get(`/transactions`);
+      console.table(response.data.transactions);
+      const transactionFormatted = response.data.transactions.map(
+        (transaction: Transaction) => ({
+          ...transaction,
+          formattedValue: formatValue(transaction.value),
+          formattedDate: new Date(transaction.created_at).toLocaleDateString('pt-BR'),
+        }),
+      );
+      const balanceFormatted = {
+        income: formatValue(response.data.balance.income),
+        outcome: formatValue(response.data.balance.outcome),
+        total: formatValue(response.data.balance.total),
+      }
+      setTransactions(transactionFormatted);
+      setBalance(balanceFormatted);
     }
-
     loadTransactions();
   }, []);
 
@@ -55,21 +63,21 @@ const Dashboard: React.FC = () => {
               <p>Entradas</p>
               <img src={income} alt="Income" />
             </header>
-            <h1 data-testid="balance-income">{formatValue(Number(balance.income))}</h1>
+            <h1 data-testid="balance-income">{balance.income}</h1>
           </Card>
           <Card>
             <header>
               <p>Saídas</p>
               <img src={outcome} alt="Outcome" />
             </header>
-            <h1 data-testid="balance-outcome">{formatValue(Number(balance.outcome))}</h1>
+            <h1 data-testid="balance-outcome">{balance.outcome}</h1>
           </Card>
           <Card total>
             <header>
               <p>Total</p>
               <img src={total} alt="Total" />
             </header>
-            <h1 data-testid="balance-total">{formatValue(Number(balance.total))}</h1>
+            <h1 data-testid="balance-total">{balance.total}</h1>
           </Card>
         </CardContainer>
 
@@ -89,11 +97,11 @@ const Dashboard: React.FC = () => {
                 <tr key={transacao.id}>
                   <td className="title">{transacao.title}</td>
                   <td className="income">
-                    { transacao.type === 'outcome' && ' - '}
-                    { formatValue(transacao.value)}
+                    {transacao.type === 'outcome' && ' - '}
+                    {transacao.formattedValue}
                   </td>
                   <td>{transacao.category.title}</td>
-                  <td>{String(moment(transacao.created_at).format("MM/DD/YYYY HH:mm:ss"))}</td>
+                  <td>{transacao.formattedDate}</td>
                 </tr>
               ))}
             </tbody>
