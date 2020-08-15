@@ -5,7 +5,7 @@ import outcome from '../../assets/outcome.svg';
 import total from '../../assets/total.svg';
 
 import api from '../../services/api';
-
+import formatValue from '../../utils/formatValue';
 import Header from '../../components/Header';
 
 import { Container, CardContainer, Card, TableContainer } from './styles';
@@ -45,13 +45,6 @@ const Dashboard: React.FC = () => {
     loadTransactions();
   }, []);
 
-  function getValueFormat(value: number){
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value)
-  }
-
   return (
     <>
       <Header />
@@ -62,21 +55,21 @@ const Dashboard: React.FC = () => {
               <p>Entradas</p>
               <img src={income} alt="Income" />
             </header>
-            <h1 data-testid="balance-income">{getValueFormat(Number(balance.income))}</h1>
+            <h1 data-testid="balance-income">{formatValue(Number(balance.income))}</h1>
           </Card>
           <Card>
             <header>
               <p>Saídas</p>
               <img src={outcome} alt="Outcome" />
             </header>
-            <h1 data-testid="balance-outcome">{getValueFormat(Number(balance.outcome))}</h1>
+            <h1 data-testid="balance-outcome">{formatValue(Number(balance.outcome))}</h1>
           </Card>
           <Card total>
             <header>
               <p>Total</p>
               <img src={total} alt="Total" />
             </header>
-            <h1 data-testid="balance-total">{getValueFormat(Number(balance.total))}</h1>
+            <h1 data-testid="balance-total">{formatValue(Number(balance.total))}</h1>
           </Card>
         </CardContainer>
 
@@ -95,7 +88,7 @@ const Dashboard: React.FC = () => {
               {transactions.map((transacao) => (
                 <tr key={transacao.id}>
                   <td className="title">{transacao.title}</td>
-                  <td className="income">{getValueFormat(transacao.value)}</td>
+                  <td className="income">{formatValue(transacao.value)}</td>
                   <td>{transacao.category.title}</td>
                   <td>{String(moment(transacao.created_at).format("MM/DD/YYYY HH:mm:ss"))}</td>
                 </tr>
